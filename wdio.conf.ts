@@ -61,15 +61,15 @@ export const config: WebdriverIO.Config = {
     capabilities: [{
         // capabilities for local Appium web tests on an Android Emulator
         platformName: 'Android',
-        browserName: 'Chrome',
-        'appium:deviceName': 'Android GoogleAPI Emulator',
-        'appium:platformVersion': '12.0',
+        'appium:deviceName': 'emulator-5554',
+        'appium:platformVersion': '16.0',
         'appium:automationName': 'UiAutomator2',
         "appium:app": "./apk/app-debug.apk",
         "appium:appPackage": "dev.raschke.pokevent",
         "appium:appActivity": "dev.raschke.pokevent.PokEventActivity",
         "appium:appName": "PokEvent",
-        "appium:bundled": "com.debug.app"
+        "appium:bundled": "com.debug.app",
+        "appium:allowTestPackages": true
     }] as CustomCapabilities[],
 
     //
