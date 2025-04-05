@@ -67,6 +67,10 @@ export default class BasePage {
         return this.retryElementAction(element, async el => await el.getText());
     }
 
+    async getElementAttribute(element: ChainablePromiseElement, attribute: string): Promise<string> {
+        return this.retryElementAction(element, async el => await el.getAttribute(attribute));
+    }
+
     async elementDisplayed(element: ChainablePromiseElement): Promise<void> {
         return this.retryElementAction(element, async () => {
             console.log('👀 Element is displayed');

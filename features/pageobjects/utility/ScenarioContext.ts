@@ -1,5 +1,3 @@
-// src/support/ScenarioContext.ts
-
 export default class ScenarioContext {
     private context: Map<string, unknown>;
 
