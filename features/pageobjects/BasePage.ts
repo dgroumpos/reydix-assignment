@@ -1,5 +1,5 @@
 import type { ChainablePromiseElement } from 'webdriverio';
-import Helper from '../Helper';
+import Helper from './utility/Helper';
 
 export default class BasePage {
     private readonly maxRetries = 5;
