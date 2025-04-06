@@ -63,4 +63,20 @@ if ! is_device_running; then
     adb emu kill
 fi
 
+# Generate Allure Report after tests are complete
+echo "🚀 Generating Allure Report..."
+
+# Ensure the allure-results folder exists and has content
+if [ -d "./allure-results" ] && [ "$(ls -A ./allure-results)" ]; then
+    allure generate ./allure-results --clean -o ./allure-report
+    echo "✅ Allure Report generated successfully!"
+else
+    echo "❌ Allure results not found, cannot generate report."
+    exit 1
+fi
+
+# Open Allure Report
+echo "🚀 Opening Allure Report..."
+allure open ./allure-report
+
 echo "✅ Test execution completed!"
