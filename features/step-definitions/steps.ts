@@ -52,4 +52,22 @@ Then('the popular event should match the event details', async  function (this: 
     await homePage.elementDisplayed(popularEventImage);
 });
 
+When('I get the information for each event', async function (this: CustomWorld) {
+    const homePage = getHomePage(this);
+    await homePage.getThisWeekPokemonInfo();
+});
+
+Then('I verify the individual details pages', async function (this: CustomWorld) {
+    const homePage = getHomePage(this);
+    const eventDetailsPage = getEventDetailsPage(this);
+
+    const count = await homePage.thisWeekImages.length
+
+    for (let i = 0; i < count; i++) {
+        await homePage.openWeeklyEvent(i);
+        await eventDetailsPage.verifyEventDetails(i);
+        await eventDetailsPage.tapElement(eventDetailsPage.backToHomeIcon);
+    }
+});
+
 
