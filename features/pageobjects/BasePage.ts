@@ -1,9 +1,12 @@
 import type { ChainablePromiseElement } from 'webdriverio';
 import Helper from './utility/Helper';
+import { CustomWorld } from './utility/World';
 
 export default class BasePage {
     private readonly maxRetries = 5;
     private readonly retryInterval = 1000;
+
+    constructor(protected world: CustomWorld) {}
 
     /**
      * Retry any action on an element with built-in waits and stability

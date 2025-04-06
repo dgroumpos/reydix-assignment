@@ -1,6 +1,6 @@
 import BasePage from './BasePage';
 
-class EventDetailsPage extends BasePage {
+export default class EventDetailsPage extends BasePage {
 
     //Locators
     public readonly eventDetailsHeader = $('//android.widget.TextView[@text="Event Details"]');
@@ -12,4 +12,3 @@ class EventDetailsPage extends BasePage {
     public readonly backToHomeIcon = $('android.widget.Button');
 }
 
-export default new EventDetailsPage();
