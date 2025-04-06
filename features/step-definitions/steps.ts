@@ -4,7 +4,7 @@ import { getHomePage, getEventDetailsPage } from '../pageobjects/utility/PageFac
 
 Given('Home page is displayed', async function  (this: CustomWorld) {
     const homePage = getHomePage(this);
-    await homePage.elementDisplayed(homePage.kantoLocation);
+    await homePage.homePageIsDisplayed();
 });
 
 When('I click on the Popular in Kanto link', async function  (this: CustomWorld) {
@@ -14,12 +14,15 @@ When('I click on the Popular in Kanto link', async function  (this: CustomWorld)
 
 Then('the event details page is displayed', async function  (this: CustomWorld) {
     const eventDetailsPage = getEventDetailsPage(this);
-    await eventDetailsPage.elementDisplayed(eventDetailsPage.eventDetailsHeader);
+    await eventDetailsPage.retryElementAction(eventDetailsPage.eventDetailsHeader, async() => {
+        console.log('👀 Waiting for element to be displayed');
+    });
+    expect(await eventDetailsPage.eventDetailsHeader.isDisplayed()).toBe(true);
 });
 
 Then('the additional section is displayed', async function  (this:CustomWorld) {
     const eventDetailsPage = getEventDetailsPage(this);
-    await eventDetailsPage.elementDisplayed(eventDetailsPage.battlesSection);
+    expect(await eventDetailsPage.battlesSection.isDisplayed()).toBe(true);
 });
 
 When('I store all the event details', async function (this: CustomWorld) {

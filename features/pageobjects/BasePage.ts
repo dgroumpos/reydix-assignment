@@ -50,21 +50,71 @@ export default class BasePage {
 
     async tapElement(element: ChainablePromiseElement) {
         return this.retryElementAction(element, async el => {
-            await driver.performActions([{
-                type: 'pointer',
-                id: 'finger1',
-                parameters: { pointerType: 'touch' },
-                actions: [
-                    { type: 'pointerMove', duration: 0, x: 0, y: 0, origin: el },
-                    { type: 'pointerDown', button: 0 },
-                    { type: 'pause', duration: 100 },
-                    { type: 'pointerUp', button: 0 }
-                ]
-            }]);
-
-            await driver.releaseActions();
+            // Make sure the element is visible, or swipe to it
+            try {
+                if (!(await el.isDisplayed())) {
+                    console.log('🔍 Element not visible — attempting to swipe into view...');
+                    await this.swipeUntilVisible(() => element);
+                }
+            } catch (e) {
+                console.warn('⚠️ Visibility check failed, will continue');
+            }
+    
+            // Final check for display/enabled
+            const isDisplayed = await el.isDisplayed();
+            const isEnabled = await el.isEnabled();
+    
+            if (!isDisplayed || !isEnabled) {
+                throw new Error('🚫 Element is not interactable (either hidden or disabled)');
+            }
+    
+            // Short buffer before tap
+            await browser.pause(150);
+    
+            // Try native tap with fallback
+            try {
+                console.log(`👆 Attempting native tap on: ${el.selector}`);
+                await driver.performActions([{
+                    type: 'pointer',
+                    id: 'finger1',
+                    parameters: { pointerType: 'touch' },
+                    actions: [
+                        { type: 'pointerMove', duration: 0, x: 0, y: 0, origin: el },
+                        { type: 'pointerDown', button: 0 },
+                        { type: 'pause', duration: 100 },
+                        { type: 'pointerUp', button: 0 }
+                    ]
+                }]);
+    
+                await driver.releaseActions();
+    
+            } catch (nativeTapError) {
+                console.warn('⚠️ Native tap failed — trying WebDriver click() as fallback');
+                await el.click();
+            }
+    
+            // Optional pause to let screen react
+            await browser.pause(300);
         });
     }
+
+    async swipeUntilVisible(
+        elementFn: () => ChainablePromiseElement,
+        maxSwipes = 5
+    ): Promise<void> {
+        for (let i = 0; i < maxSwipes; i++) {
+            const el = await elementFn();
+            if (await el.isDisplayed()) return;
+    
+            console.log(`🔄 Swiping to bring element into view (attempt ${i + 1})`);
+            await this.swipeUp(el);
+            await browser.pause(500); // Let scroll finish
+        }
+    
+        throw new Error('🛑 Element not found after maximum swipe attempts');
+    }
+    
+    
 
     async getElementText(element: ChainablePromiseElement): Promise<string> {
         return this.retryElementAction(element, async el => await el.getText());
@@ -72,12 +122,6 @@ export default class BasePage {
 
     async getElementAttribute(element: ChainablePromiseElement, attribute: string): Promise<string> {
         return this.retryElementAction(element, async el => await el.getAttribute(attribute));
-    }
-
-    async elementDisplayed(element: ChainablePromiseElement): Promise<void> {
-        return this.retryElementAction(element, async () => {
-            console.log('👀 Element is displayed');
-        });
     }
 
     async swipeElementLeft(element: ChainablePromiseElement) {

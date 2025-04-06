@@ -1,6 +1,7 @@
 import BasePage from './BasePage';
 import { CustomWorld } from './utility/World';
 import { Event } from '../interfaces/Event';
+import { expect } from 'chai';
 
 export default class HomePage extends BasePage {
 
@@ -14,27 +15,37 @@ export default class HomePage extends BasePage {
 
   get thisWeekImages() {
     return $$('//android.widget.TextView[@text="This week"]/following-sibling::android.view.View[1]//android.view.View[@content-desc]');
-}
+  }
 
 
   //Functions
-  async checkPopularEventDetails(){
-        //Building the locators from the corresponding xpath in the home page and the text retrieved from scenarioContext
-        let popularEventHeader = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventHeader')}"]`);
-        let popularEventDate = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventDate')}"]`);
-        let popularEventLocation = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventLocation')}"]`);
-        let popularEventImage = $(`//android.widget.ScrollView/android.view.View[1]/android.view.View[@content-desc="${this.world.context.get<string>('image')}"]`);
-        await this.elementDisplayed(popularEventHeader);
-        await this.elementDisplayed(popularEventDate);
-        await this.elementDisplayed(popularEventLocation);
-        await this.elementDisplayed(popularEventImage);
+  async homePageIsDisplayed(){
+    await this.retryElementAction(this.kantoLocation, async () => {
+      console.log('👀 Element is displayed');
+    });
+    expect(await this.kantoLocation.isDisplayed()).to.be.true;
+  }
+
+  async checkPopularEventDetails() {
+    //Building the locators from the corresponding xpath in the home page and the text retrieved from scenarioContext
+    let popularEventHeader = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventHeader')}"]`);
+    let popularEventDate = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventDate')}"]`);
+    let popularEventLocation = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventLocation')}"]`);
+    let popularEventImage = $(`//android.widget.ScrollView/android.view.View[1]/android.view.View[@content-desc="${this.world.context.get<string>('image')}"]`);
+
+    expect(await popularEventHeader.isDisplayed()).to.be.true;
+    expect(await popularEventDate.isDisplayed()).to.be.true;
+    expect(await popularEventLocation.isDisplayed()).to.be.true;
+    expect(await popularEventImage.isDisplayed()).to.be.true;
   }
 
   async getThisWeekPokemonInfo() {
     const events: Event[] = [];
     const baseImage = '//android.widget.TextView[@text="This week"]/following-sibling::android.view.View[1]//android.view.View[@content-desc]';
 
-    await this.elementDisplayed(this.thisWeekImages[0]);
+    await this.retryElementAction(this.thisWeekImages[0], async () => {
+      console.log('👀 Waiting for first weekly image to be visible...');
+    });
     const count = await this.thisWeekImages.length;
 
     if (count === 0)
@@ -47,7 +58,7 @@ export default class HomePage extends BasePage {
       const imageTitle = await $$(`${baseImage}//following-sibling::android.widget.TextView[1]`)[i];
       const imageDate = await $$(`${baseImage}//following-sibling::android.widget.TextView[2]`)[i];
       const imageLocation = await $$(`${baseImage}//following-sibling::android.widget.TextView[3]`)[i];
-   
+
       events.push({
         eventHeader: await this.getElementText(imageTitle),
         eventDate: await this.getElementText(imageDate),
@@ -58,8 +69,10 @@ export default class HomePage extends BasePage {
     this.world.context.set('events', events);
   }
 
-  async openWeeklyEvent(idx : number){
-    await this.elementDisplayed(this.thisWeekImages[idx]);
+  async openWeeklyEvent(idx: number) {
+    await this.retryElementAction(this.thisWeekImages[idx], async () => {
+      console.log(`👀 Waiting for weekly image ${idx} to be visible...`);
+    });
     await this.tapElement(this.thisWeekImages[idx]);
   }
 
