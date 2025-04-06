@@ -18,6 +18,18 @@ export default class HomePage extends BasePage {
 
 
   //Functions
+  async checkPopularEventDetails(){
+        //Building the locators from the corresponding xpath in the home page and the text retrieved from scenarioContext
+        let popularEventHeader = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventHeader')}"]`);
+        let popularEventDate = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventDate')}"]`);
+        let popularEventLocation = $(`//android.widget.ScrollView/android.view.View[1]//android.widget.TextView[@text="${this.world.context.get<string>('eventLocation')}"]`);
+        let popularEventImage = $(`//android.widget.ScrollView/android.view.View[1]/android.view.View[@content-desc="${this.world.context.get<string>('image')}"]`);
+        await this.elementDisplayed(popularEventHeader);
+        await this.elementDisplayed(popularEventDate);
+        await this.elementDisplayed(popularEventLocation);
+        await this.elementDisplayed(popularEventImage);
+  }
+
   async getThisWeekPokemonInfo() {
     const events: Event[] = [];
     const baseImage = '//android.widget.TextView[@text="This week"]/following-sibling::android.view.View[1]//android.view.View[@content-desc]';

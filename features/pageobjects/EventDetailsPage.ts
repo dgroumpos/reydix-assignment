@@ -19,6 +19,17 @@ export default class EventDetailsPage extends BasePage {
     public readonly backToHomeIcon = $('android.widget.Button');
 
     //Functions
+    async storeEventDetails(){
+      const eventHeaderText = await this.getElementText(this.eventHeader);
+      const eventDateText = await this.getElementText(this.eventDate);
+      const eventLocationText = await this.getElementText(this.eventLocation);
+      const imageText = await this.getElementAttribute(this.image, 'content-desc');
+      this.world.context.set('eventHeader', eventHeaderText);
+      this.world.context.set('eventDate', eventDateText.replace(/^When:\s*/, ''));
+      this.world.context.set('eventLocation', eventLocationText.replace(/^Where:\s*/, ''));
+      this.world.context.set('image', imageText);
+    }
+
     async verifyEventDetails(idx: number){
         const eventData: Event = this.world.context.get<Event[]>('events')[idx];
         const headerText: string = await this.getElementText(this.eventHeader);
