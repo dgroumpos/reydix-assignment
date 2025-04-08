@@ -8,10 +8,6 @@ export default class BasePage {
 
     constructor(protected world: CustomWorld) { }
 
-    /**
-     * Retry any action on an element with built-in waits and stability
-     */
-
     async retryElementAction<T>(
         element: ChainablePromiseElement,
         action: (el: WebdriverIO.Element) => Promise<T>
@@ -188,5 +184,57 @@ export default class BasePage {
         await driver.releaseActions();
     }
     
+    async swipeLeftOnScreen(yPercent: number = 0.85) {
+        const { width, height } = await driver.getWindowRect();
+    
+        const y = height * yPercent;
+        const startX = width * 0.9;
+        const endX = width * 0.1;
+    
+        await driver.performActions([{
+            type: 'pointer',
+            id: 'finger1',
+            parameters: { pointerType: 'touch' },
+            actions: [
+                { type: 'pointerMove', duration: 0, x: startX, y },
+                { type: 'pointerDown', button: 0 },
+                { type: 'pause', duration: 200 },
+                { type: 'pointerMove', duration: 300, x: endX, y },
+                { type: 'pointerUp', button: 0 }
+            ]
+        }]);
+    
+        await driver.releaseActions();
+    }
 
+    async swipeLeftOnElement(
+        element: ChainablePromiseElement, distanceMultiplier: number = 1) {
+        const screen = await driver.getWindowRect();
+        const location = await element.getLocation();
+        const size = await element.getSize();
+    
+        const centerY = location.y + size.height / 2;
+    
+        // Calculate how far to swipe: element width * multiplier (e.g. 1.5x width)
+        const swipeDistance = size.width * distanceMultiplier;
+    
+        const startX = screen.width * 0.9;           // near the right edge
+        const endX = startX - swipeDistance;         // swipe left
+    
+        await driver.performActions([{
+            type: 'pointer',
+            id: 'finger1',
+            parameters: { pointerType: 'touch' },
+            actions: [
+                { type: 'pointerMove', duration: 0, x: startX, y: centerY },
+                { type: 'pointerDown', button: 0 },
+                { type: 'pause', duration: 100 },
+                { type: 'pointerMove', duration: 300, x: endX, y: centerY },
+                { type: 'pointerUp', button: 0 }
+            ]
+        }]);
+    
+        await driver.releaseActions();
+    } 
+       
 }

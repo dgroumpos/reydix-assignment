@@ -1,28 +1,29 @@
 import { Given, Then, When } from '@wdio/cucumber-framework';
 import { CustomWorld } from '../pageobjects/utility/World';
 import { getHomePage, getEventDetailsPage } from '../pageobjects/utility/PageFactory';
+import { expect } from 'chai';
 
-Given('Home page is displayed', async function  (this: CustomWorld) {
+Given('Home page is displayed', async function (this: CustomWorld) {
     const homePage = getHomePage(this);
     await homePage.homePageIsDisplayed();
 });
 
-When('I click on the Popular in Kanto link', async function  (this: CustomWorld) {
+When('I click on the Popular in Kanto link', async function (this: CustomWorld) {
     const homePage = getHomePage(this);
     await homePage.tapElement(homePage.popularLink);
 });
 
-Then('the event details page is displayed', async function  (this: CustomWorld) {
+Then('the event details page is displayed', async function (this: CustomWorld) {
     const eventDetailsPage = getEventDetailsPage(this);
-    await eventDetailsPage.retryElementAction(eventDetailsPage.eventDetailsHeader, async() => {
+    await eventDetailsPage.retryElementAction(eventDetailsPage.eventDetailsHeader, async () => {
         console.log('👀 Waiting for element to be displayed');
     });
-    expect(await eventDetailsPage.eventDetailsHeader.isDisplayed()).toBe(true);
+    expect(await eventDetailsPage.eventDetailsHeader.isDisplayed()).to.equal(true);
 });
 
-Then('the additional section is displayed', async function  (this:CustomWorld) {
+Then('the additional section is displayed', async function (this: CustomWorld) {
     const eventDetailsPage = getEventDetailsPage(this);
-    expect(await eventDetailsPage.battlesSection.isDisplayed()).toBe(true);
+    expect(await eventDetailsPage.battlesSection.isDisplayed()).to.equal(true);
 });
 
 When('I store all the event details', async function (this: CustomWorld) {
@@ -35,7 +36,7 @@ Then('I return to the Home page', async function (this: CustomWorld) {
     await eventDetailsPage.tapElement(eventDetailsPage.backToHomeIcon);
 });
 
-Then('the popular event should match the event details', async  function (this: CustomWorld) {
+Then('the popular event should match the event details', async function (this: CustomWorld) {
     const homePage = getHomePage(this);
     await homePage.checkPopularEventDetails();
 });
@@ -60,11 +61,32 @@ Then('I verify the individual details pages', async function (this: CustomWorld)
 
 When('The user scrolls to Popular Pokemon section', async function (this: CustomWorld) {
     const homePage = getHomePage(this);
-    await homePage.swipeUntilVisible(() =>homePage.popularPokemonHeader);
+    await homePage.swipeUntilVisible(() => homePage.popularPokemonHeader);
 });
 
-When(/^the user "(connects|disconnects)" (?:with|from) all the pokemon$/, async function (this: CustomWorld, action: string) {
-    
+When("The user connects with all the pokemon", async function (this: CustomWorld) {
+    const homePage = getHomePage(this);
+    let shouldKeepScrolling = true;
+    let namesList: string[] = [];
+    while (shouldKeepScrolling) {
+        for (let i = 0; i < await homePage.connectButtons.length; i++) {
+            let state = await homePage.getElementText(homePage.buttonStateTexts[i]);
+            if (state === 'CONNECT') {
+                let name = await homePage.getElementText(homePage.popularPokemonNames[i]);
+                console.log(`---POKEMON NAME: ${name}---`);
+
+                if (!namesList.includes(name)) {
+                    namesList.push(name);
+                    await homePage.tapElement(homePage.connectButtons[i])
+                    await driver.pause(1000);
+                }
+                expect(await homePage.getElementText(homePage.buttonStateTexts[i])).to.equal('DISCONNECT');
+            }
+            await homePage.swipeLeftOnElement(homePage.popularPokemonImages[i], 2);
+        }
+        if (await homePage.getElementText(homePage.buttonStateTexts[await homePage.connectButtons.length - 1]) === 'DISCONNECT')
+            shouldKeepScrolling = false;
+    }
 });
 
 Then(/^all the button texts are set to status "(CONNECT|DISCONNECT)"$/, async function (this: CustomWorld, expectedStatus: string) {

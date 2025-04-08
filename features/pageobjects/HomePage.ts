@@ -9,35 +9,35 @@ export default class HomePage extends BasePage {
     super(world);
   }
 
-   //Locators
-   public readonly popularLink = $('//android.widget.TextView[@text="Popular in Kanto"]');
-   public readonly kantoLocation = $('//android.widget.TextView[@text="Kanto"]');
-   public readonly popularPokemonHeader = $('//android.widget.TextView[@text="Popular Pokemons"]');
-   public readonly popularPokemonScrollView = $('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View');
- 
-   //Getters
-   get thisWeekImages() {
-     return $$('//android.widget.TextView[@text="This week"]/following-sibling::android.view.View[1]//android.view.View[@content-desc]');
-   }
- 
-   get popularPokemonImages() {
-     return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.widget.ImageView[@content-desc]');
-   }
- 
-   get popularPokemonNames() {
-     return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.widget.TextView');
-   }
- 
-   get connectButtons() {
-     return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.view.View/android.widget.Button');
-   }
- 
-   get buttonStateTexts() {
-     return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.view.View/android.widget.TextView');
-   }
+  //Locators
+  public readonly popularLink = $('//android.widget.TextView[@text="Popular in Kanto"]');
+  public readonly kantoLocation = $('//android.widget.TextView[@text="Kanto"]');
+  public readonly popularPokemonHeader = $('//android.widget.TextView[@text="Popular Pokemons"]');
+  public readonly popularPokemonScrollView = $('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View');
+
+  //Getters
+  get thisWeekImages() {
+    return $$('//android.widget.TextView[@text="This week"]/following-sibling::android.view.View[1]//android.view.View[@content-desc]');
+  }
+
+  get popularPokemonImages() {
+    return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.widget.ImageView[@content-desc]');
+  }
+
+  get popularPokemonNames() {
+    return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.widget.TextView');
+  }
+
+  get connectButtons() {
+    return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.view.View/android.widget.Button');
+  }
+
+  get buttonStateTexts() {
+    return $$('//android.widget.TextView[@text="Popular Pokemons"]/following-sibling::android.view.View/android.view.View/android.widget.TextView');
+  }
 
   //Functions
-  async homePageIsDisplayed(){
+  async homePageIsDisplayed() {
     await this.retryElementAction(this.kantoLocation, async () => {
       console.log('👀 Element is displayed');
     });
