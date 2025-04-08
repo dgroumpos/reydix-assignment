@@ -73,13 +73,13 @@ When("The user connects with all the pokemon", async function (this: CustomWorld
             let state = await homePage.getElementText(homePage.buttonStateTexts[i]);
             if (state === 'CONNECT') {
                 let name = await homePage.getElementText(homePage.popularPokemonNames[i]);
-                console.log(`---POKEMON NAME: ${name}---`);
 
                 if (!namesList.includes(name)) {
                     namesList.push(name);
                     await homePage.tapElement(homePage.connectButtons[i])
                     await driver.pause(1000);
                 }
+                console.log(`---CONNECTED WITH POKEMON NAME: ${name} ---`);
                 expect(await homePage.getElementText(homePage.buttonStateTexts[i])).to.equal('DISCONNECT');
             }
             await homePage.swipeLeftOnElement(homePage.popularPokemonImages[i], 2);
@@ -89,7 +89,15 @@ When("The user connects with all the pokemon", async function (this: CustomWorld
     }
 });
 
-Then(/^all the button texts are set to status "(CONNECT|DISCONNECT)"$/, async function (this: CustomWorld, expectedStatus: string) {
+When(/^The user (connects with|disconnects from) the first pokemon$/, async function (this: CustomWorld, action: string) {
+    const homePage = getHomePage(this);
+    await homePage.tapElement(homePage.connectButtons[0]);
 });
+
+Then(/^The state changes to "(CONNECT|DISCONNECT)"$/, async function (this: CustomWorld,expectedState: string) {
+    const homePage = getHomePage(this);
+    const state = await homePage.getElementText(homePage.buttonStateTexts[0]);
+    expect(state).to.equal(expectedState);
+  });
 
 
