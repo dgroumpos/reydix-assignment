@@ -27,6 +27,7 @@
     "include": [
         "test",
         "wdio.conf.ts",
-        "features"
+        "features",
+        "features/support/wdio.d.ts"
     ]
 }

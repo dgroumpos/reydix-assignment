@@ -49,6 +49,19 @@ npx appium &
 # Wait for Appium to start
 sleep 5
 
+# Clean up old Allure results and reports
+echo "🧹 Cleaning previous Allure results and reports..."
+
+if [ -d "./allure-results" ]; then
+    echo "🗑️ Deleting existing ./allure-results folder..."
+    rm -rf ./allure-results
+fi
+
+if [ -d "./allure-report" ]; then
+    echo "🗑️ Deleting existing ./allure-report folder..."
+    rm -rf ./allure-report
+fi
+
 # Run WebdriverIO tests
 echo "🚀 Running WebdriverIO tests..."
 npx wdio run ./wdio.conf.ts
