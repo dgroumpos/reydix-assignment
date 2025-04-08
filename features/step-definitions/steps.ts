@@ -58,4 +58,15 @@ Then('I verify the individual details pages', async function (this: CustomWorld)
     }
 });
 
+When('The user scrolls to Popular Pokemon section', async function (this: CustomWorld) {
+
+});
+
+When(/^the user "(connects|disconnects)" (?:with|from) all the pokemon$/, async function (this: CustomWorld, action: string) {
+    
+});
+
+Then(/^all the button texts are set to status "(CONNECT|DISCONNECT)"$/, async function (this: CustomWorld, expectedStatus: string) {
+});
+
 
