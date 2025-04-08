@@ -60,6 +60,7 @@ Then('I verify the individual details pages', async function (this: CustomWorld)
 
 When('The user scrolls to Popular Pokemon section', async function (this: CustomWorld) {
     const homePage = getHomePage(this);
+    await homePage.swipeUntilVisible(() =>homePage.popularPokemonHeader);
 });
 
 When(/^the user "(connects|disconnects)" (?:with|from) all the pokemon$/, async function (this: CustomWorld, action: string) {

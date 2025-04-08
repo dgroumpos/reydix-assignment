@@ -98,24 +98,6 @@ export default class BasePage {
         });
     }
 
-    async swipeUntilVisible(
-        elementFn: () => ChainablePromiseElement,
-        maxSwipes = 5
-    ): Promise<void> {
-        for (let i = 0; i < maxSwipes; i++) {
-            const el = await elementFn();
-            if (await el.isDisplayed()) return;
-    
-            console.log(`🔄 Swiping to bring element into view (attempt ${i + 1})`);
-            await this.swipeUp(el);
-            await browser.pause(500); // Let scroll finish
-        }
-    
-        throw new Error('🛑 Element not found after maximum swipe attempts');
-    }
-    
-    
-
     async getElementText(element: ChainablePromiseElement): Promise<string> {
         return this.retryElementAction(element, async el => await el.getText());
     }
@@ -167,5 +149,44 @@ export default class BasePage {
             await driver.releaseActions();
         });
     }
+
+    async swipeUntilVisible(
+        elementFn: () => ChainablePromiseElement,
+        maxSwipes = 5
+    ): Promise<void> {
+        for (let i = 0; i < maxSwipes; i++) {
+            const el = await elementFn();
+            if (await el.isDisplayed()) return;
+    
+            console.log(`🔄 Swiping to bring element into view (attempt ${i + 1})`);
+            await this.swipeUpFromScreen();
+            await browser.pause(500); // Let scroll finish
+        }
+    
+        throw new Error('🛑 Element not found after maximum swipe attempts');
+    }
+
+    async swipeUpFromScreen(startPerc: number = 0.8, endPerc: number = 0.2, duration: number = 300): Promise<void> {
+        const { height, width } = await driver.getWindowRect();
+        const startY = height * startPerc;
+        const endY = height * endPerc;
+        const x = width / 2;
+    
+        await driver.performActions([{
+            type: 'pointer',
+            id: 'finger1',
+            parameters: { pointerType: 'touch' },
+            actions: [
+                { type: 'pointerMove', duration: 0, x, y: startY },
+                { type: 'pointerDown', button: 0 },
+                { type: 'pause', duration },
+                { type: 'pointerMove', duration, x, y: endY },
+                { type: 'pointerUp', button: 0 }
+            ]
+        }]);
+    
+        await driver.releaseActions();
+    }
+    
 
 }
