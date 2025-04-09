@@ -1,4 +1,3 @@
-// src/support/world.ts
 import { setWorldConstructor, World } from '@cucumber/cucumber';
 import ScenarioContext from './ScenarioContext';
 

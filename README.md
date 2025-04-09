@@ -70,3 +70,6 @@ allure open ./allure-report
 ├── start-test.sh               # macOS/Linux runner
 ├── README.md
 
+📝 Observations
+
+Regarding the connect / disconnect functionality, I faced several issues when trying to implement the swiping to the last element and connecting at the same time scenario. Therefore I did the best workaround I possibly could, however you will observe that not all cards are clicked on the correct order and some not at all. In my opinion, the elements structure does not favor the swiping functionality, as each card should be ideally be a seperate view with all its details nested inside. That would have given me a better way to get the size of each card and swipe based on that. In my implementation I had to use the images of each card to do that and this probably lead to the inaccuracies.

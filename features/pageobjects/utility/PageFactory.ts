@@ -6,7 +6,6 @@ export function getPage<T>(PageClass: new (world: CustomWorld) => T, world: Cust
     return new PageClass(world);
 }
 
-// Optional: Named helpers if you prefer convenience
 export function getHomePage(world: CustomWorld) {
     return new HomePage(world);
 }
