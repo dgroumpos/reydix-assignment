@@ -71,8 +71,8 @@ export default class HomePage extends BasePage {
 
     for (let i = 0; i < count; i++) {
       const eventImg = await $$(`${baseImage}`)[i];
-      await this.swipeUp(eventImg);
-      await this.swipeElementLeft(eventImg);
+      await this.swipeUpFromScreen();
+      await this.swipeLeftOnElement(eventImg);
       const imageTitle = await $$(`${baseImage}//following-sibling::android.widget.TextView[1]`)[i];
       const imageDate = await $$(`${baseImage}//following-sibling::android.widget.TextView[2]`)[i];
       const imageLocation = await $$(`${baseImage}//following-sibling::android.widget.TextView[3]`)[i];
